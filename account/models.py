@@ -1,9 +1,11 @@
 from django.db import models
+from django.db.models.signals import pre_save
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils import timezone
-
 from django.utils.translation import ugettext_lazy as _
+
+from .utils import unique_slug_generator, random_string_generator
 
 class UserManger(BaseUserManager):
     """ 
@@ -39,11 +41,25 @@ class UserManger(BaseUserManager):
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    
+    slug = models.SlugField(unique=True, null=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManger()
 
+    @property
+    def username(self):
+        return f'{self.first_name} {self.last_name}'
+
     def __str__(self):
         return self.email
+
+
+def pre_save_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance)
+
+
+
+pre_save.connect(pre_save_receiver, sender=CustomUser)
