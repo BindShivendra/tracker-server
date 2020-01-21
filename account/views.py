@@ -1,3 +1,40 @@
-from django.shortcuts import render
+from rest_framework import generics, permissions
 
-# Create your views here.
+from .models import CustomUser
+from .serializers import UserSerializer, UserRegisterSerializer, UserUpdateSerializer, UserPasswordSerializer
+
+
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserRegisterView(generics.CreateAPIView):
+    model = CustomUser
+
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = UserRegisterSerializer
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    model = CustomUser
+    queryset = CustomUser.objects.all()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = UserUpdateSerializer
+
+class PasswordUpdateView(generics.UpdateAPIView):
+    model = CustomUser
+    queryset = CustomUser.objects.all()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = UserPasswordSerializer
+
