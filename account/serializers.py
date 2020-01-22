@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.core import exceptions
-import django.contrib.auth.password_validation as validators
-
+from django.contrib.auth import password_validation as validators
+from django.core.validators import validate_email
+from django.shortcuts import get_object_or_404
 
 from .models import CustomUser
 
@@ -90,3 +91,31 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         instance.set_password(new_password)
         instance.save()
         return instance
+
+class GetTokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            validate_email(email)
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError(list(e.messages))
+
+        password = attrs.get('password')
+
+        if email and password:
+            user =  get_object_or_404(CustomUser, email=email)
+            auth_user = authenticate(email=email, password=password)
+        else:
+            raise serializers.ValidationError('Email or password is not proveded')
+
+        if auth_user:
+            if not auth_user.is_active:
+                raise serializers.ValidationError('User account is desables')
+        else:
+            raise serializers.ValidationError('Email or password is not correct')
+        
+        return super(GetTokenSerializer, self).validate(attrs)
+
