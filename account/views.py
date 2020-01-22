@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta, timezone
+import pytz
+from django.conf import settings
 from rest_framework import parsers, renderers
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -60,8 +63,23 @@ class GetAuthToken(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         user = CustomUser.objects.get(email=email)
-        token, _ = Token.objects.get_or_create(user=user)
+        token, created = Token.objects.get_or_create(user=user)
+        if not created:
+            token.created = datetime.utcnow()
+            token.save()
+        token_lifespan = settings.TOKEN_LIFESPAN
+        now = datetime.utcnow()
+
+        if token.created < now - token_lifespan:
+            token.delete()
+            token = Token.objects.create(user=user)
+            token.create = now
+            token.save()
+
         return Response({'token': token.key})
 
 
 get_token = GetAuthToken.as_view()
+
+class LoginView(APIView):
+    pass
