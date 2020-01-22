@@ -11,7 +11,7 @@ from .models import CustomUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = [  'email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active' ]
+        fields = [  'email', 'slug', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active' ]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

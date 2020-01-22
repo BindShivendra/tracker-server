@@ -11,6 +11,7 @@ class UserListView(generics.ListAPIView):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'slug'
 
 
 class UserRegisterView(generics.CreateAPIView):
@@ -24,17 +25,19 @@ class UserRegisterView(generics.CreateAPIView):
 
 class UserUpdateView(generics.UpdateAPIView):
     model = CustomUser
+    lookup_field = 'slug'
     queryset = CustomUser.objects.all()
     permission_classes = [
-        permissions.AllowAny # Or anon users can't register
+        permissions.AllowAny 
     ]
     serializer_class = UserUpdateSerializer
 
 class PasswordUpdateView(generics.UpdateAPIView):
     model = CustomUser
+    lookup_field = 'slug'
     queryset = CustomUser.objects.all()
     permission_classes = [
-        permissions.AllowAny # Or anon users can't register
+        permissions.AllowAny 
     ]
     serializer_class = UserPasswordSerializer
 
