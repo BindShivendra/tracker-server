@@ -1,0 +1,44 @@
+{% extends 'account/acc_base.html' %}
+
+{% block content %}
+<div class="login-form">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom my-4 py-1 text-center">Join Today</legend>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                <input type="text" 
+                        class="form-control {% if form.email.errors %} is-invalid{% endif %}"
+                        id="id_email" name="email" placeholder="email "
+                        value="{{ form.email.value|default:'' }}" >
+                {% if form.email.errors %}
+                <div class="invalid-feedback">
+                    {{ from.email.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                <input type="password" 
+                        class="form-control {% if form.password.errors %} is-invalid{% endif %}"
+                        id="id_password" name="password" placeholder="password"
+                        value="{{ form.password.value|default:'' }}" >
+                {% if form.password.errors %}
+                <div class="invalid-feedback">
+                    {{ from.password1.errors }}
+                </div>
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Log In</button>
+        </div>
+    </form>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need An Account? <a class="ml-2" href="{% url 'auth:signup' %}">Sign Up</a>
+        </small>
+    </div>
+</div>
+{% endblock content %}

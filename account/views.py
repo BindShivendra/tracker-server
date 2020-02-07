@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import pytz
 from django.conf import settings
+from django.views.generic.edit import FormView
 from rest_framework import parsers, renderers
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -10,7 +11,7 @@ from rest_framework import generics, permissions
 
 from .models import CustomUser
 from .serializers import UserSerializer, UserRegisterSerializer, UserUpdateSerializer, UserPasswordSerializer , GetTokenSerializer
-
+from account import  forms
 
 class UserListView(generics.ListAPIView):
     queryset = CustomUser.objects.all()
@@ -81,5 +82,29 @@ class GetAuthToken(APIView):
 
 get_token = GetAuthToken.as_view()
 
-class LoginView(APIView):
-    pass
+class SignUpView(FormView):
+    template_name = 'account/signup.html'
+    form_class = forms.UserCreationForm
+
+    def get_success_url(self):
+        redirect_to  = self.request.GET.get('next', '/')
+        return redirect_to
+
+    def form_valid(self, form):
+        res = super().form_valid(form)
+        form.save()
+        
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password1')
+
+        logger.info(f'New sign up for {email} view SignUpView')
+
+        user = authenticate(email=email, password=password)
+        login(self.request, user)
+
+        form.send_email()
+        messages.info(self.request, 'You signed up successfully.')
+
+        return res
+
+signup = SignUpView.as_view()

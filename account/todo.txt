@@ -1,0 +1,4 @@
+1. Add feature to send email on registration 
+2. send email on registration with verification code 
+3. send email with password reset url
+4. send email with password reset success message

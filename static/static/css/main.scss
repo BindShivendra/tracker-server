@@ -1,0 +1,28 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root{
+    --Roboto:'Roboto', sans-serif;
+    --Poppins: 'Poppins', sans-serif;
+}
+.navbar{
+    &.bg-chrome{
+        background-color: #476c77 ;
+    }
+    &>.navbar-brand{
+        font-size: 29px;
+        font-weight: 600;
+        font-family: var(--Poppins);
+        letter-spacing: 2px;
+    }
+    .nav-item{
+        .nav-link{
+            text-transform: uppercase;
+            font-family: var(--Poppins);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+    }
+}

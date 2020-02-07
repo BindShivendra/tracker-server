@@ -1,0 +1,30 @@
+* {
+  padding: 0;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+:root {
+  --Roboto:'Roboto', sans-serif;
+  --Poppins: 'Poppins', sans-serif;
+}
+
+.navbar.bg-chrome {
+  background-color: #476c77;
+}
+
+.navbar > .navbar-brand {
+  font-size: 29px;
+  font-weight: 600;
+  font-family: var(--Poppins);
+  letter-spacing: 2px;
+}
+
+.navbar .nav-item .nav-link {
+  text-transform: uppercase;
+  font-family: var(--Poppins);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+/*# sourceMappingURL=main.css.map */
